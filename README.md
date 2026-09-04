@@ -104,7 +104,7 @@ All routes are prefixed with `/v1/api`.
 
 \* `*/admin/auth/register` currently has no authentication guard, meaning anyone can create an admin account. Before deploying, restrict this route to existing admins only (or remove it and promote admins via direct DB access / a seed script).
 
-### Admin — user management — `/v1/api/admin`
+### Admin — user management — `/v1/api/admin/manage`
 
 All routes below require a valid admin token.
 
