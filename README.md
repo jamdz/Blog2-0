@@ -93,7 +93,7 @@ All routes are prefixed with `/v1/api`.
 - `category` (text)
 - `image` (file)
 
-### Admin auth — `/v1/api/admin`
+### Admin auth — `/v1/api/admin/auth`
 
 | Method | Endpoint | Auth required | Description |
 |---|---|---|---|
@@ -102,7 +102,7 @@ All routes are prefixed with `/v1/api`.
 | GET | `/profile` | Yes (admin) | Get the logged-in admin's own profile |
 | POST | `/logout` | Yes (admin) | Clear the auth cookie |
 
-\* `*/admin/register` currently has no authentication guard, meaning anyone can create an admin account. Before deploying, restrict this route to existing admins only (or remove it and promote admins via direct DB access / a seed script).
+\* `*/admin/auth/register` currently has no authentication guard, meaning anyone can create an admin account. Before deploying, restrict this route to existing admins only (or remove it and promote admins via direct DB access / a seed script).
 
 ### Admin — user management — `/v1/api/admin`
 
@@ -119,11 +119,11 @@ All routes below require a valid admin token.
 
 Authentication uses **JWTs stored in an HTTP-only cookie** named `token`, set automatically on login.
 
-1. **Register** via `POST /v1/api/users/register` (or `/v1/api/admin/register` for an admin account).
-2. **Log in** via `POST /v1/api/users/login` or `POST /v1/api/admin/login` with your credentials. The server:
+1. **Register** via `POST /v1/api/users/register` (or `/v1/api/admin/auth/register` for an admin account).
+2. **Log in** via `POST /v1/api/users/login` or `POST /v1/api/admin/auth/login` with your credentials. The server:
    - Signs a JWT and returns it in the JSON response body, **and**
    - Sets it as an HTTP-only `token` cookie (`sameSite: strict`, expires in 1 hour for users / 2 hours for admins)
 3. **Authenticated requests** are verified by reading the `token` cookie — no `Authorization` header is used. If you're testing with Postman, enable cookie jar / "send cookies automatically" so the cookie persists across requests after login.
-4. **Logging out** (`POST /users/logout` or `POST /admin/logout`) clears the cookie.
+4. **Logging out** (`POST /users/logout` or `POST /admin/auth/logout`) clears the cookie.
 
-**Important — token payload differs by login route.** Regular user login (`/users/login`) signs `{ userId, email }` into the JWT. Admin login (`/admin/login`) signs `{ id, role }`. Downstream code reads `req.user.userId` in user/post controllers and `req.user.role` / `req.user.id` in admin controllers — so an admin who logs in via the *regular* user route will not have `role` on their token, and admin-only middleware will reject them. **Always log in through `/v1/api/admin/login` to access admin-protected routes.** (Unifying the JWT payload shape across both login flows — e.g. always signing `{ id, userId, role }` — would remove this foot-gun and is worth doing before this goes further.)
+**Important — token payload differs by login route.** Regular user login (`/users/login`) signs `{ userId, email }` into the JWT. Admin login (`/admin/auth/login`) signs `{ id, role }`. Downstream code reads `req.user.userId` in user/post controllers and `req.user.role` / `req.user.id` in admin controllers — so an admin who logs in via the *regular* user route will not have `role` on their token, and admin-only middleware will reject them. **Always log in through `/v1/api/admin/auth/login` to access admin-protected routes.** (Unifying the JWT payload shape across both login flows — e.g. always signing `{ id, userId, role }` — would remove this foot-gun and is worth doing before this goes further.)
