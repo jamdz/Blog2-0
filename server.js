@@ -54,7 +54,7 @@ app.listen(3000, () => {
 import path from "path";
 import { fileURLToPath } from "url";
 
-// needed because you're using ES Modules — __dirname isn't available by default
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
