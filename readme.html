@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog API 2.0 — Documentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+
+  :root{
+    --bg: #11151b;
+    --bg-raised: #171c24;
+    --bg-panel: #1c222b;
+    --line: #2a3140;
+    --line-soft: #232a35;
+    --ink: #e9ecf1;
+    --ink-dim: #a8b0bf;
+    --ink-faint: #6c7688;
+    --accent: #6fd6b5;
+    --accent-dim: #3f5f56;
+    --accent-ink: #0e1512;
+    --get: #6fd6b5;
+    --post: #7ea8f0;
+    --patch: #eab86a;
+    --delete: #e8807e;
+    --radius: 3px;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin:0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,h2,h3,h4, .display, nav, .badge, .kv-key, code, pre, .mono{
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  code, pre, kbd, .mono-code{
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  a{ color: var(--accent); text-decoration: none; }
+  a:hover{ text-decoration: underline; }
+  a:focus-visible, button:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ---------- layout shell ---------- */
+
+  .shell{
+    display: grid;
+    grid-template-columns: 280px minmax(0,1fr);
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+
+  /* ---------- sidebar ---------- */
+
+  .sidebar{
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 34px 28px 40px;
+    border-right: 1px solid var(--line);
+  }
+
+  .brand{
+    display:flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+
+  .brand-mark{
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    background: linear-gradient(155deg, var(--accent), #3a8f77);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent-ink);
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .brand-name{
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+  }
+
+  .brand-version{
+    font-size: 12px;
+    color: var(--ink-faint);
+    margin: 2px 0 28px 40px;
+  }
+
+  .nav-group{ margin-bottom: 22px; }
+
+  .nav-group-title{
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .nav-link{
+    display: block;
+    padding: 6px 10px;
+    margin: 1px 0;
+    border-radius: var(--radius);
+    color: var(--ink-dim);
+    font-size: 13.5px;
+    border-left: 2px solid transparent;
+  }
+
+  .nav-link:hover{
+    background: var(--bg-raised);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .nav-link.active{
+    color: var(--ink);
+    border-left-color: var(--accent);
+    background: var(--bg-raised);
+  }
+
+  .nav-sub{ padding-left: 14px; }
+  .nav-sub .nav-link{ font-size: 12.5px; }
+
+  /* ---------- main content ---------- */
+
+  main{ padding: 56px 56px 120px; min-width: 0; }
+
+  .kicker{
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+
+  h1.title{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1.08;
+    margin: 0 0 18px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  .lede{
+    font-size: 19px;
+    color: var(--ink-dim);
+    max-width: 62ch;
+    margin: 0 0 30px;
+  }
+
+  .feature-list{
+    list-style: none;
+    padding: 0;
+    margin: 0 0 64px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .feature-list li{
+    background: var(--bg-raised);
+    padding: 16px 18px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13.5px;
+    color: var(--ink-dim);
+    line-height: 1.5;
+  }
+
+  .feature-list li strong{ color: var(--ink); font-weight: 600; }
+
+  section.block{
+    margin-top: 76px;
+    padding-top: 4px;
+    scroll-margin-top: 24px;
+  }
+
+  section.block:first-of-type{ margin-top: 0; }
+
+  .block-num{
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-faint);
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  h2{
+    font-size: 27px;
+    font-weight: 600;
+    margin: 0 0 18px;
+    letter-spacing: -0.005em;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  h3{
+    font-size: 18px;
+    font-weight: 600;
+    margin: 40px 0 14px;
+    color: var(--ink);
+  }
+
+  h3 .path{
+    color: var(--ink-faint);
+    font-weight: 400;
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    margin-left: 8px;
+  }
+
+  p{ margin: 0 0 16px; color: var(--ink-dim); max-width: 68ch; }
+  p code, li code{ color: var(--ink); }
+
+  strong{ color: var(--ink); }
+
+  /* ---------- tech grid ---------- */
+
+  .tech-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 22px 0 8px;
+  }
+
+  .tech-card{
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 16px 16px 15px;
+  }
+
+  .tech-card .tname{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--accent);
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .tech-card .tpurpose{
+    font-size: 13px;
+    color: var(--ink-faint);
+    line-height: 1.5;
+  }
+
+  .note-esm{
+    font-size: 14px;
+    color: var(--ink-faint);
+    margin-top: 18px;
+    padding-left: 14px;
+    border-left: 2px solid var(--line);
+  }
+
+  /* ---------- steps ---------- */
+
+  .steps{
+    counter-reset: step;
+    list-style: none;
+    padding: 0;
+    margin: 24px 0;
+  }
+
+  .steps > li{
+    position: relative;
+    padding: 0 0 32px 42px;
+    border-left: 1px solid var(--line);
+    margin-left: 13px;
+  }
+
+  .steps > li:last-child{ border-left-color: transparent; padding-bottom: 0; }
+
+  .steps > li::before{
+    counter-increment: step;
+    content: counter(step);
+    position: absolute;
+    left: -13px;
+    top: 0;
+    width: 26px; height: 26px;
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    color: var(--ink-dim);
+    border-radius: 50%;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .steps h4{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15.5px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0 0 8px;
+  }
+
+  /* ---------- code blocks ---------- */
+
+  pre{
+    background: #0d1117;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 16px 18px;
+    overflow-x: auto;
+    font-size: 13.5px;
+    line-height: 1.6;
+    margin: 0 0 18px;
+    color: #c9d1d9;
+  }
+
+  pre .c1{ color: #6c7688; }
+  pre .s1{ color: #a5d6a7; }
+  pre .k1{ color: #7ea8f0; }
+
+  code:not(pre code){
+    background: var(--bg-panel);
+    border: 1px solid var(--line-soft);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.87em;
+  }
+
+  .callout{
+    display: flex;
+    gap: 12px;
+    background: rgba(234, 184, 106, 0.07);
+    border: 1px solid rgba(234, 184, 106, 0.28);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin: 0 0 20px;
+  }
+
+  .callout .flag{
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--patch);
+    font-size: 12px;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  .callout p{ margin: 0; font-size: 14.5px; color: var(--ink-dim); }
+  .callout p:not(:last-child){ margin-bottom: 8px; }
+
+  .callout.danger{
+    background: rgba(232, 128, 126, 0.07);
+    border-color: rgba(232, 128, 126, 0.28);
+  }
+  .callout.danger .flag{ color: var(--delete); }
+
+  /* ---------- key/value table (env vars) ---------- */
+
+  .kv-table{
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14.5px;
+  }
+
+  .kv-table th{
+    text-align: left;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--ink-faint);
+    font-weight: 500;
+    padding: 0 0 10px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .kv-table td{
+    padding: 14px 18px 14px 0;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--ink-dim);
+    vertical-align: top;
+  }
+
+  .kv-table tr:last-child td{ border-bottom: none; }
+
+  .kv-key{
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink);
+    font-size: 13.5px;
+    white-space: nowrap;
+  }
+
+  /* ---------- endpoint tables ---------- */
+
+  .endpoint-table{
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 8px;
+    font-size: 14px;
+  }
+
+  .endpoint-table th{
+    text-align: left;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--ink-faint);
+    font-weight: 500;
+    padding: 0 14px 10px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .endpoint-table td{
+    padding: 13px 14px 13px 0;
+    border-bottom: 1px solid var(--line-soft);
+    color: var(--ink-dim);
+    vertical-align: top;
+  }
+
+  .endpoint-table tr:last-child td{ border-bottom: none; }
+
+  .endpoint-table td.ep-path{
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink);
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .method{
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  .method.get{ background: rgba(111,214,181,0.13); color: var(--get); }
+  .method.post{ background: rgba(126,168,240,0.14); color: var(--post); }
+  .method.patch{ background: rgba(234,184,106,0.14); color: var(--patch); }
+  .method.delete{ background: rgba(232,128,126,0.14); color: var(--delete); }
+
+  .lock{ font-size: 12.5px; color: var(--ink-faint); white-space: nowrap; }
+  .lock.priv{ color: var(--patch); }
+  .lock.admin{ color: var(--delete); }
+
+  .table-scroll{ overflow-x: auto; margin-bottom: 22px; }
+
+  .group-label{
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    color: var(--ink-faint);
+    margin: 30px 0 12px;
+  }
+
+  .group-label .base{
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ---------- flow list (auth section) ---------- */
+
+  .flow{
+    list-style: none;
+    counter-reset: flow;
+    padding: 0;
+    margin: 22px 0;
+  }
+
+  .flow li{
+    counter-increment: flow;
+    position: relative;
+    padding: 0 0 20px 34px;
+    color: var(--ink-dim);
+    font-size: 15px;
+  }
+
+  .flow li::before{
+    content: counter(flow);
+    position: absolute;
+    left: 0; top: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    border: 1px solid var(--accent-dim);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .flow li strong{ color: var(--ink); }
+
+  .role-grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 22px 0;
+  }
+
+  .role-card{
+    background: var(--bg-panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 16px 18px;
+  }
+
+  .role-card .rtag{
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+
+  .role-card.user .rtag{ background: rgba(111,214,181,0.13); color: var(--get); }
+  .role-card.admin .rtag{ background: rgba(232,128,126,0.14); color: var(--delete); }
+
+  .role-card p{ font-size: 13.5px; margin: 0; }
+
+  footer{
+    margin-top: 90px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+
+  ::-webkit-scrollbar{ width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track{ background: transparent; }
+  ::-webkit-scrollbar-thumb{ background: var(--line); border-radius: 5px; }
+  ::-webkit-scrollbar-thumb:hover{ background: var(--ink-faint); }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+  }
+
+  @media (max-width: 920px){
+    .shell{ grid-template-columns: 1fr; }
+    .sidebar{ position: relative; height: auto; border-right: none; border-bottom: 1px solid var(--line); }
+    main{ padding: 40px 24px 90px; }
+    .tech-grid{ grid-template-columns: 1fr 1fr; }
+    .feature-list{ grid-template-columns: 1fr; }
+    .role-grid{ grid-template-columns: 1fr; }
+    h1.title{ font-size: 32px; }
+  }
+
+  @media (max-width: 560px){
+    .tech-grid{ grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">B2</div>
+      <div class="brand-name">Blog API 2.0</div>
+    </div>
+    <div class="brand-version">v1 · REST · Node / Express / MongoDB</div>
+
+    <nav>
+      <div class="nav-group">
+        <div class="nav-group-title">OVERVIEW</div>
+        <a class="nav-link" href="#description">1. Project description</a>
+        <a class="nav-link" href="#tech">2. Technologies used</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">GETTING STARTED</div>
+        <a class="nav-link" href="#install">3. Installation</a>
+        <a class="nav-link" href="#env">4. Environment variables</a>
+      </div>
+      <div class="nav-group">
+        <div class="nav-group-title">REFERENCE</div>
+        <a class="nav-link" href="#endpoints">5. API endpoints</a>
+        <div class="nav-sub">
+          <a class="nav-link" href="#ep-users">Users</a>
+          <a class="nav-link" href="#ep-posts">Posts</a>
+          <a class="nav-link" href="#ep-admin-auth">Admin auth</a>
+          <a class="nav-link" href="#ep-admin-manage">Admin management</a>
+        </div>
+        <a class="nav-link" href="#auth">6. Authentication</a>
+      </div>
+    </nav>
+  </aside>
+
+  <main>
+
+    <div class="kicker">DOCUMENTATION</div>
+    <h1 class="title">Blog API 2.0</h1>
+    <p class="lede">A RESTful blogging service built on Node.js, Express, and MongoDB — with user-owned posts, image uploads, and a separate admin layer for platform management.</p>
+
+    <ul class="feature-list">
+      <li><strong>Auth</strong> — JWT delivered as HTTP-only cookies for users and admins alike</li>
+      <li><strong>Posts</strong> — full CRUD, scoped so users only touch their own content</li>
+      <li><strong>Uploads</strong> — Multer-backed cover images on every post</li>
+      <li><strong>Discovery</strong> — public listing, search, and category filtering</li>
+      <li><strong>Roles</strong> — <code>user</code> / <code>admin</code> enforced via middleware</li>
+      <li><strong>Admin tools</strong> — user inspection and cascade delete via transaction</li>
+    </ul>
+
+    <!-- 1. DESCRIPTION -->
+    <section class="block" id="description">
+      <div class="block-num">01</div>
+      <h2>Project description</h2>
+      <p>Blog API 2.0 is a backend service for a blogging platform. Registered users create an account, log in, and manage their own blog posts — creating, updating, and deleting entries, each with an optional cover image. Anyone, logged in or not, can browse, search, and filter every published post through a set of public endpoints.</p>
+      <p>A separate admin role sits on top of the same authentication system. Admins log in through a dedicated auth flow and get access to platform-management tools: listing every user, inspecting what a specific user has posted, and removing a user together with all of their posts in one atomic transaction.</p>
+    </section>
+
+    <!-- 2. TECH -->
+    <section class="block" id="tech">
+      <div class="block-num">02</div>
+      <h2>Technologies used</h2>
+
+      <div class="tech-grid">
+        <div class="tech-card"><span class="tname">Node.js</span><span class="tpurpose">JavaScript runtime</span></div>
+        <div class="tech-card"><span class="tname">Express 5</span><span class="tpurpose">Web framework &amp; routing</span></div>
+        <div class="tech-card"><span class="tname">MongoDB</span><span class="tpurpose">Primary database</span></div>
+        <div class="tech-card"><span class="tname">Mongoose</span><span class="tpurpose">ODM &amp; schema modeling</span></div>
+        <div class="tech-card"><span class="tname">jsonwebtoken</span><span class="tpurpose">Signing &amp; verifying auth tokens</span></div>
+        <div class="tech-card"><span class="tname">bcryptjs</span><span class="tpurpose">Password hashing</span></div>
+        <div class="tech-card"><span class="tname">cookie-parser</span><span class="tpurpose">Reads the JWT from HTTP-only cookies</span></div>
+        <div class="tech-card"><span class="tname">multer</span><span class="tpurpose">Multipart form-data &amp; image uploads</span></div>
+        <div class="tech-card"><span class="tname">dotenv</span><span class="tpurpose">Environment variable management</span></div>
+        <div class="tech-card"><span class="tname">nodemon</span><span class="tpurpose">Dev-only auto-restart</span></div>
+      </div>
+
+      <p class="note-esm">The project uses native ES Modules — <code>"type": "module"</code> in <code>package.json</code> — so every file uses <code>import</code> / <code>export</code> syntax throughout.</p>
+    </section>
+
+    <!-- 3. INSTALL -->
+    <section class="block" id="install">
+      <div class="block-num">03</div>
+      <h2>Installation instructions</h2>
+      <p>Requires Node.js (v18+ recommended) and a MongoDB instance — local, or a hosted service such as MongoDB Atlas.</p>
+
+      <ol class="steps">
+        <li>
+          <h4>Clone the repository</h4>
+<pre>git clone https://github.com/jamdz/Blog2-0.git
+cd Blog2-0</pre>
+        </li>
+        <li>
+          <h4>Install dependencies</h4>
+<pre>npm install</pre>
+        </li>
+        <li>
+          <h4>Create your environment file</h4>
+          <p style="margin:0;">Add a <code>.env</code> file in the project root — see <a href="#env">Environment variables</a> below.</p>
+        </li>
+        <li>
+          <h4>Run the server</h4>
+          <p style="margin:0 0 10px;">Development mode, restarts automatically on file changes:</p>
+<pre>npm run dev</pre>
+          <p style="margin:0 0 10px;">Production mode:</p>
+<pre>npm start</pre>
+        </li>
+        <li>
+          <h4>Confirm it's running</h4>
+          <p style="margin:0;">The server listens on port <code>3000</code>. Visit <code>http://localhost:3000/</code> for a welcome JSON message confirming the API is live.</p>
+        </li>
+      </ol>
+
+      <div class="callout">
+        <span class="flag">NOTE</span>
+        <p>The <code>uploads/</code> folder — where post cover images are stored — must exist at the project root. It's already included in this repo.</p>
+      </div>
+    </section>
+
+    <!-- 4. ENV VARS -->
+    <section class="block" id="env">
+      <div class="block-num">04</div>
+      <h2>Environment variables</h2>
+      <p>Create a <code>.env</code> file in the project root with the following keys:</p>
+
+      <div class="table-scroll">
+        <table class="kv-table">
+          <thead><tr><th>Variable</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="kv-key">databaseURL</td>
+              <td>MongoDB connection string — an Atlas <code>mongodb+srv://...</code> URI, or a local <code>mongodb://localhost:27017/&lt;db-name&gt;</code></td>
+            </tr>
+            <tr>
+              <td class="kv-key">JWT_SECRET</td>
+              <td>Secret key used to sign and verify JWTs. Use a long, random string in production</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="margin-top:26px; margin-bottom: 10px;">Example <code>.env</code>:</p>
+<pre>databaseURL=mongodb+srv://&lt;username&gt;:&lt;password&gt;@cluster.mongodb.net/blog2
+JWT_SECRET=your_long_random_secret_here</pre>
+
+      <div class="callout danger">
+        <span class="flag">WARNING</span>
+        <p>Never commit your real <code>.env</code> file.</p>
+        <p>The repo currently has a file named <code>.gitIgnore</code> — double-check the casing matches what Git expects on your OS, since Git treats <code>.gitignore</code> case-sensitively on Linux/macOS.</p>
+      </div>
+    </section>
+
+    <!-- 5. ENDPOINTS -->
+    <section class="block" id="endpoints">
+      <div class="block-num">05</div>
+      <h2>API endpoints</h2>
+      <p>All routes are prefixed with <code>/v1/api</code>. <span class="lock priv">Private</span> means the route requires a valid <code>token</code> cookie; <span class="lock admin">Admin</span> means it additionally requires the <code>admin</code> role.</p>
+
+      <div class="group-label" id="ep-users">USER ROUTES · <span class="base">/v1/api/users</span></div>
+      <div class="table-scroll">
+        <table class="endpoint-table">
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method post">POST</span></td><td class="ep-path">/register</td><td>Register a new user</td><td class="lock">Public</td></tr>
+            <tr><td><span class="method post">POST</span></td><td class="ep-path">/login</td><td>Log in and receive a JWT, set as an HTTP-only cookie</td><td class="lock">Public</td></tr>
+            <tr><td><span class="method get">GET</span></td><td class="ep-path">/profile</td><td>Get the logged-in user's profile</td><td class="lock priv">Private</td></tr>
+            <tr><td><span class="method post">POST</span></td><td class="ep-path">/logout</td><td>Log out, clears the auth cookie</td><td class="lock priv">Private</td></tr>
+            <tr><td><span class="method patch">PATCH</span></td><td class="ep-path">/update-profile</td><td>Update the logged-in user's profile</td><td class="lock priv">Private</td></tr>
+            <tr><td><span class="method delete">DELETE</span></td><td class="ep-path">/delete-profile</td><td>Delete the logged-in user's account</td><td class="lock priv">Private</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="group-label" id="ep-posts">POST ROUTES · <span class="base">/v1/api/posts</span></div>
+      <div class="table-scroll">
+        <table class="endpoint-table">
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method post">POST</span></td><td class="ep-path">/create-post</td><td>Create a post — multipart form with an <code>image</code> file plus <code>title</code>, <code>content</code>, <code>category</code></td><td class="lock priv">Private</td></tr>
+            <tr><td><span class="method get">GET</span></td><td class="ep-path">/my-posts</td><td>Get all posts belonging to the logged-in user</td><td class="lock priv">Private</td></tr>
+            <tr><td><span class="method patch">PATCH</span></td><td class="ep-path">/update-post/:postId</td><td>Update one of your own posts, optionally replacing the image</td><td class="lock priv">Private</td></tr>
+            <tr><td><span class="method delete">DELETE</span></td><td class="ep-path">/delete-post/:postId</td><td>Delete one of your own posts</td><td class="lock priv">Private</td></tr>
+            <tr><td><span class="method get">GET</span></td><td class="ep-path">/search-posts?query=</td><td>Search all posts by title or content, case-insensitive</td><td class="lock">Public</td></tr>
+            <tr><td><span class="method get">GET</span></td><td class="ep-path">/filter-posts?category=</td><td>Filter all posts by category</td><td class="lock">Public</td></tr>
+            <tr><td><span class="method get">GET</span></td><td class="ep-path">/</td><td>Get every blog post from every user</td><td class="lock">Public</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="group-label" id="ep-admin-auth">ADMIN AUTH ROUTES · <span class="base">/v1/api/admin/auth</span></div>
+      <div class="table-scroll">
+        <table class="endpoint-table">
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method post">POST</span></td><td class="ep-path">/register</td><td>Register a new admin account*</td><td class="lock">Public</td></tr>
+            <tr><td><span class="method post">POST</span></td><td class="ep-path">/login</td><td>Log in as an admin with username + password, receive a JWT cookie</td><td class="lock">Public</td></tr>
+            <tr><td><span class="method get">GET</span></td><td class="ep-path">/profile</td><td>Get the logged-in admin's profile</td><td class="lock admin">Admin</td></tr>
+            <tr><td><span class="method post">POST</span></td><td class="ep-path">/logout</td><td>Log out the admin, clears the auth cookie</td><td class="lock admin">Admin</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <span class="flag">TO&nbsp;DO</span>
+        <p>*Admin registration is currently open and unprotected in the code. Restrict it — e.g. to a super-admin only, or disable it after initial setup — before deploying to production.</p>
+      </div>
+
+      <div class="group-label" id="ep-admin-manage">ADMIN USER-MANAGEMENT ROUTES · <span class="base">/v1/api/admin/manage</span></div>
+      <p style="margin-top:-4px;">Every route in this group requires a logged-in admin.</p>
+      <div class="table-scroll">
+        <table class="endpoint-table">
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method get">GET</span></td><td class="ep-path">/users</td><td>List all users with the <code>user</code> role</td><td class="lock admin">Admin</td></tr>
+            <tr><td><span class="method get">GET</span></td><td class="ep-path">/users/:id</td><td>Get a single user by ID</td><td class="lock admin">Admin</td></tr>
+            <tr><td><span class="method get">GET</span></td><td class="ep-path">/users/posts/:id</td><td>Get all posts written by a specific user</td><td class="lock admin">Admin</td></tr>
+            <tr><td><span class="method delete">DELETE</span></td><td class="ep-path">/users/:id</td><td>Delete a user and cascade-delete all their posts, atomic transaction</td><td class="lock admin">Admin</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 6. AUTH -->
+    <section class="block" id="auth">
+      <div class="block-num">06</div>
+      <h2>Authentication instructions</h2>
+      <p>Authentication is JWT-based, delivered via <strong>HTTP-only cookies</strong> rather than <code>Authorization</code> headers, for both regular users and admins.</p>
+
+      <ol class="flow">
+        <li><strong>Register or log in</strong> via <code>POST /v1/api/users/register</code> (or <code>/login</code>) for regular users, or <code>POST /v1/api/admin/auth/login</code> for admins.</li>
+        <li>On success, the server signs a JWT — <code>userId</code>/<code>email</code> for users, <code>id</code>/<code>role</code> for admins — sets it as an <code>httpOnly</code>, <code>sameSite: strict</code> cookie named <code>token</code>, and also returns the raw token in the response body.</li>
+        <li>On later requests to protected routes, the client automatically sends the <code>token</code> cookie. <code>authMiddleware</code> reads <code>req.cookies.token</code>, verifies it against <code>JWT_SECRET</code>, and attaches the decoded payload to <code>req.user</code>.</li>
+        <li>Admin-only routes additionally pass through <code>requireAdmin</code>, which checks <code>req.user.role === "admin"</code> — this must run <em>after</em> <code>authMiddleware</code>.</li>
+        <li><strong>Token expiry:</strong> user tokens last 1 hour; admin tokens last 2 hours. Clients must log in again once expired.</li>
+        <li><strong>Logging out</strong> clears the <code>token</code> cookie via the respective <code>/logout</code> endpoint.</li>
+      </ol>
+
+      <h3>Testing with Postman / Insomnia</h3>
+      <p>Make sure cookie handling is enabled for your environment so the <code>token</code> cookie set on login is sent on later requests. Without cookie support, grab the <code>token</code> from the login response body and attach it manually:</p>
+<pre>Cookie: token=&lt;your_token&gt;</pre>
+
+      <h3>Roles</h3>
+      <div class="role-grid">
+        <div class="role-card user">
+          <span class="rtag">user</span>
+          <p>Default role assigned on registration through <code>/v1/api/users/register</code>.</p>
+        </div>
+        <div class="role-card admin">
+          <span class="rtag">admin</span>
+          <p>Created via <code>/v1/api/admin/auth/register</code> and stored in the same <code>UserModel</code> collection.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Generated from a review of the project's source code — routers, controllers, models, and middleware. Update this file as the API evolves.
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  // Highlight the active section link while scrolling
+  const links = Array.from(document.querySelectorAll('.nav-link'));
+  const sections = links
+    .map(l => document.querySelector(l.getAttribute('href')))
+    .filter(Boolean);
+
+  const setActive = () => {
+    let currentId = null;
+    const scrollPos = window.scrollY + 120;
+    for (const sec of sections) {
+      if (sec.offsetTop <= scrollPos) currentId = sec.id;
+    }
+    links.forEach(l => {
+      l.classList.toggle('active', l.getAttribute('href') === '#' + currentId);
+    });
+  };
+
+  window.addEventListener('scroll', setActive, { passive: true });
+  setActive();
+</script>
+
+</body>
+</html>
