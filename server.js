@@ -46,6 +46,11 @@ app.use("/v1/api/admin/auth", adminAuthRoutes);
 // Use the user management router for admin
 app.use("/v1/api/admin/manage", userManagementAdminRoutes);
 
+// get the base url for the server
+app.get("/", (req, res) => {
+    res.status(200).json({ message: "Welcome to the Blog API" });
+});
+
 // Start the server
 app.listen(3000, () => {
     console.log("Server is running on port 3000");
