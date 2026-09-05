@@ -49,6 +49,19 @@ export const getAllPosts = async (req, res) => {
     }
 };
 
+// Get all blog posts from all users for the base url /
+export const getAllBlogPosts = async (req, res) => {
+    try {
+        const posts = await PostModel.find();
+        if (!posts || posts.length === 0) {
+            return res.status(404).json({ postcounts: 0, success: false, message: "No blog posts have been created or found" });
+        }
+        res.status(200).json({ success: true, data: posts });
+    } catch (error) {
+        res.status(400).json({ success: false, message: error.message });
+    }
+};
+
 // Update a user's post by ID
 export const updatePost = async (req, res) => {
     try {
