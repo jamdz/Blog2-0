@@ -48,7 +48,7 @@ app.use("/v1/api/admin/manage", userManagementAdminRoutes);
 
 // get the base url for the server
 app.get("/", (req, res) => {
-    res.status(200).json({ message: "Welcome to the Blog API" });
+    res.status(200).json({ message: "Welcome to the Blog API 2.0 Project here is the base url, and you can access the API endpoints from here, also you can get all blog endpoints by reading the README.md file." });
 });
 
 // Start the server
