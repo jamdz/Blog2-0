@@ -54,9 +54,9 @@ export const getAllBlogPosts = async (req, res) => {
     try {
         const posts = await PostModel.find();
         if (!posts || posts.length === 0) {
-            return res.status(404).json({ postcounts: 0, success: false, message: "No blog posts have been created or found" });
+            return res.status(404).json({ postcounts: posts.length, success: false, message: "No blog posts have been created or found" });
         }
-        res.status(200).json({ success: true, data: posts });
+        res.status(200).json({ postcounts: posts.length, success: true, data: posts });
     } catch (error) {
         res.status(400).json({ success: false, message: error.message });
     }
