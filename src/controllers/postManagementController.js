@@ -36,7 +36,7 @@ export const createPost = async (req, res) => {
 // Get all authenticated user's own posts
 export const getAllPosts = async (req, res) => {
     try { 
-        const posts = await PostModel.find({ author: req.user.userId });
+        const posts = await PostModel.find({ author: req.user.userId }).populate("author", "name lastname username region").select("-updatedAt -__v");
           if (!req.user || !req.user.userId) {
                     return res.status(401).json({ success: false, message: "Unauthorized: User information is missing" });
         }
@@ -52,7 +52,7 @@ export const getAllPosts = async (req, res) => {
 // Get all blog posts from all users for the base url /
 export const getAllBlogPosts = async (req, res) => {
     try {
-        const posts = await PostModel.find();
+        const posts = await PostModel.find().populate("author", "name lastname username region").select("-updatedAt -__v");
         if (!posts || posts.length === 0) {
             return res.status(404).json({ postcounts: posts.length, success: false, message: "No blog posts have been created or found" });
         }
